@@ -63,5 +63,5 @@ def preidct_spamorham(emailtext: str):
         return {"status": "Failure", "Error": str(e)}
 
 if __name__ == "__main__":
-    uvicorn.run(app, port=8080, host="0.0.0.0")
+    uvicorn.run(app, port=80, host="0.0.0.0")
 
