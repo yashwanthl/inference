@@ -5,3 +5,10 @@ pandas
 numpy
 sklearn
 loguru
+pprint
+absl-py
+spacy
+uuid
+tensorflow
+tensorflow_hub
+https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-2.2.0/en_core_web_sm-2.2.0.tar.gz
