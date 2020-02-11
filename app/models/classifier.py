@@ -12,9 +12,10 @@ nlp = spacy.load("en_core_web_sm")
 embed = hub.load("https://tfhub.dev/google/universal-sentence-encoder/4")
 
 class Classifier:
-    def __init__(self, name: str):
+    def __init__(self, name: str, belongsto: str):
         self.id = str(uuid4())
         self.name = name
+        self.belongsto = belongsto
         self.inclass = None
         self.outclass = None
 

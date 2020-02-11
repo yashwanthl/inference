@@ -12,6 +12,7 @@ router = APIRouter()
 
 class ModelRequest(BaseModel):
     name: str
+    user: str
     examples: List[str]
 
 @router.get("/")
@@ -24,7 +25,7 @@ def create_train(request: ModelRequest):
     End point to create and train a new classifier
     '''
     logger.info("Creating a new classifier: " + request.name)
-    classifier = Classifier(request.name)
+    classifier = Classifier(request.name, request.user)
     logger.info("Training classifier: " + request.name)
     classifier.in_class = classifier.train(request.examples)
     logger.info("Training done")
