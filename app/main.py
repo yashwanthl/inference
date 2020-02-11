@@ -4,7 +4,7 @@ from modules.dataset import Dataset
 from models.spam import SpamOrHam
 from loguru import logger
 
-from routers import spam
+from routers import spam, classifier
 
 app = FastAPI(title="Hubble Inference API", version='1.0', description="Hubble - Text analytics platform. Endpoints for all text analytics models")
 
@@ -16,6 +16,13 @@ app.include_router(
     spam.router,
     prefix="/spam",
     tags=["spam"],
+    responses={404: {"description": "Not found"}}
+)
+
+app.include_router(
+    classifier.router,
+    prefix="/classifier",
+    tags=["classifier"],
     responses={404: {"description": "Not found"}}
 )
 
@@ -31,5 +38,5 @@ def read_home():
     return {"message": "Hubble Inference API is live!. Listening you LOUD and CLEAR!"}
 
 if __name__ == "__main__":
-    uvicorn.run(app, port=80, host="0.0.0.0")
+    uvicorn.run(app, port=8080, host="0.0.0.0")
 
