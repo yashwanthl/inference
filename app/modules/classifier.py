@@ -41,3 +41,19 @@ class Classifier:
         except Exception as e: 
             logger.error("Error in saving classifier: " + classifier.name +". Error " + str(e))
             raise
+
+    def get_classifier(self, classifier_id: str):
+        try:
+            query = 'SELECT * FROM c WHERE c.id = "' + classifier_id + '"'
+            logger.info("Establishing DB connection")
+            db = CosmosDB(cfg.settings["host"], cfg.settings["master_key"])
+            response = db.query_item(cfg.settings["database_id"], cfg.settings["collection_id"], query)
+            if response["status"] is True:
+                for item in response["items"]:
+                    return {"status": "success", "item": item}
+            else:
+                return {"status": "Failure", "Error": "Unable to query items"}
+            return response["items"][0]
+        except Exception as e:
+            logger.error("Error in getting classifier with id: " + classifier_id +". Error " + str(e))
+            return {"status": "Failure", "Error": str(e)}

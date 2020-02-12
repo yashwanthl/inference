@@ -27,3 +27,13 @@ def create_train(request: ModelRequest):
     reponse = classifier.create_train(request.name, request.user, request.examples)
     return reponse
 
+@router.get("/{classifier_id}")
+def get_classifier(classifier_id: str):
+    '''
+    End point to create and train a new classifier
+    '''
+    classifier = Classifier()
+    response = classifier.get_classifier(classifier_id)
+    return response
+    
+
