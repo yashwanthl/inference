@@ -29,3 +29,30 @@ class TensorFlowClassifier:
             "embeddings": embeddings
         }
         return in_class 
+    
+    @staticmethod
+    def inference(classifier_embeddings: list, text: str):
+        doc = nlp(text)
+        sentences = [sent.text for sent in doc.sents]
+        this_embeddings = embed(sentences).numpy().tolist()
+        sims = cosine_similarity(this_embeddings, classifier_embeddings)
+        stats = [{
+            "min": np.min(sim_arr),
+            "max": np.max(sim_arr),
+            "mean": np.mean(sim_arr),
+            "std": np.std(sim_arr)
+        } for sim_arr in sims]
+        inference = False
+        score = 0.0
+        evidence = []
+        for idx, stat_dict in enumerate(stats):
+            score = np.max([score, stat_dict["max"]])
+            if (stat_dict["max"] > 0.5 or stat_dict["min"] > 0.2 or stat_dict["mean"] > 0.3):
+                inference = True
+                evidence.append(sentences[idx])
+        return {
+            "status": True,
+            "inference": inference,
+            "score": score,
+            "evidence": evidence
+        }

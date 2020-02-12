@@ -9,7 +9,7 @@ from app.modules.classifier import Classifier
 
 router = APIRouter()
 
-class ModelRequest(BaseModel):
+class CreateClassifierRequest(BaseModel):
     name: str
     user: str
     examples: List[str]
@@ -26,10 +26,31 @@ def get(id: str = None, belongsto: str = None):
     '''
     classifier = Classifier()
     response = classifier.get_classifiers(id, belongsto)
+    if response["status"] is True:
+        classifiers = []
+        for item in response["items"]:
+            thisClassifier = {
+                "id": item["id"],
+                "name": item["name"],
+                "belongsto": item["belongsto"],
+                "active": item["active"]
+            }
+            classifiers.append(thisClassifier)
+        return {"status": True, "items": classifiers}
+    else:
+        return {"status": False, "Error": "Unable to fetch classifiers"}
+
+@router.get("/inference")
+def get_inference(id: str, text: str):
+    '''
+    Endpoint to get text inference from a particular classifier
+    '''
+    classifier = Classifier()
+    response = classifier.inference_classifier(id, text)
     return response
 
 @router.post("/")
-def create_train(request: ModelRequest):
+def create_train(request: CreateClassifierRequest):
     '''
     End point to create and train a new classifier
     '''

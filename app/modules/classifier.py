@@ -67,19 +67,32 @@ class Classifier:
             db = CosmosDB(cfg.settings["host"], cfg.settings["master_key"])
             response = db.query_item(cfg.settings["database_id"], cfg.settings["collection_id"], query)
             if response["status"] is True:
-                classifiers = []
-                for item in response["items"]:
-                    thisClassifier = {
-                        "id": item["id"],
-                        "name": item["name"],
-                        "belongsto": item["belongsto"],
-                        "active": item["active"]
-                    }
-                    classifiers.append(thisClassifier)
-                return {"status": True, "item": classifiers}
+                return response
             else:
                 return {"status": False, "Error": "Unable to query items"}   
         except Exception as e:
             logger.error("Error in querying query: " + query + ". Error " + str(e))
+            return {"status": False, "Error": str(e)}
+
+    def inference_classifier(self, classifier_id: str, text: str):
+        '''
+        get inference for text from a particular classifier
+        '''
+        try:
+            logger.info("Fetching embeddings for classifier: " + classifier_id)
+            response = self.get_classifiers(classifier_id)
+            if response["status"] is True:
+                classifiers_embeddings = []
+                for item in response["items"]:
+                    classifiers_embeddings = item["inclass"]["embeddings"]
+                    break
+                logger.info("Fetching inference for text.")
+                inference = TensorFlowClassifier.inference(classifiers_embeddings, text)
+                logger.info("Fetched inference for text.")
+                return {"status": True, "Inference": inference}    
+            else:
+                return {"status": False, "Error": "Unable to fetch embeddings of: " + classifier_id}    
+        except Exception as e:
+            logger.error("Error in Inferencing classifier: " + classifier_id + ". Error " + str(e))
             return {"status": False, "Error": str(e)}
             
