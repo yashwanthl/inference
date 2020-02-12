@@ -15,8 +15,18 @@ class ModelRequest(BaseModel):
     examples: List[str]
 
 @router.get("/")
-def status_spam():
-    return {"message": "Classifier is up and running"}
+def get(id: str = None, belongsto: str = None):
+    '''
+    End point to get classifiers based on the filters
+
+    parameters
+    active: Active classifiers
+    id: Classifier Id
+    belongsto: Belongs to (Created user)
+    '''
+    classifier = Classifier()
+    response = classifier.get_classifiers(id, belongsto)
+    return response
 
 @router.post("/")
 def create_train(request: ModelRequest):
@@ -25,15 +35,5 @@ def create_train(request: ModelRequest):
     '''
     classifier = Classifier()
     reponse = classifier.create_train(request.name, request.user, request.examples)
-    return reponse
-
-@router.get("/{classifier_id}")
-def get_classifier(classifier_id: str):
-    '''
-    End point to create and train a new classifier
-    '''
-    classifier = Classifier()
-    response = classifier.get_classifier(classifier_id)
-    return response
-    
+    return reponse    
 
