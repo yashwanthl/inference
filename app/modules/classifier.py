@@ -43,6 +43,9 @@ class Classifier:
             raise
 
     def get_classifier(self, classifier_id: str):
+        '''
+        get saved classifier with id
+        '''
         try:
             query = 'SELECT * FROM c WHERE c.id = "' + classifier_id + '"'
             logger.info("Establishing DB connection")
