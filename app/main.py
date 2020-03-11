@@ -45,5 +45,5 @@ def read_home():
     return {"message": "Hubble Inference API is live!. Listening you LOUD and CLEAR!"}
 
 if __name__ == "__main__":
-    uvicorn.run(app, port=8080, host="0.0.0.0")
+    uvicorn.run(app, port=80, host="0.0.0.0")
 
