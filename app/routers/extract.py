@@ -2,6 +2,7 @@ from fastapi import APIRouter
 import sys
 sys.path.append(".")
 from loguru import logger
+from app.modules.extractor import ExtractorModule
 
 router = APIRouter()
 
@@ -13,4 +14,6 @@ def get(text: str):
     parameters
     text: text from which labels has to be extracted
     '''
-    return {"status": True, "text": text}
+    extractor =  ExtractorModule()
+    response = extractor.extract(text)
+    return response
