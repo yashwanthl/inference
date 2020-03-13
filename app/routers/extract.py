@@ -12,7 +12,7 @@ class CreateSpacyRequest(BaseModel):
     user: str
 
 @router.get("/")
-def get(text: str):
+def get(text: str, name: str = None):
     '''
     End point to extract labels from a give text 
 
@@ -20,7 +20,7 @@ def get(text: str):
     text: text from which labels has to be extracted
     '''
     extractor =  ExtractorModule()
-    response = extractor.extract(text)
+    response = extractor.extract(text, name)
     return response
 
 @router.post("/")
@@ -30,4 +30,5 @@ def create_train(request: CreateSpacyRequest):
     '''
     logger.info("Request to create, train a spacy ner")
     extractor =  ExtractorModule()
-    extractor.train_spacy(request.name, request.user)
+    response = extractor.train_spacy(request.name, request.user)
+    return response

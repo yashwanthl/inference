@@ -35,6 +35,13 @@ class Extractor:
         self.active = True
 
     def train_spacy(self, data = TRAIN_DATA, iterations = 20):
+        '''
+        Train spaCy ner
+
+        Parameters
+        @data - Training data
+        @iterations - default to 20
+        '''
         nlp = spacy.blank('en')
         if 'ner' not in nlp.pipe_names:
             ner = nlp.create_pipe('ner')
@@ -58,35 +65,45 @@ class Extractor:
                         drop=0.2,  # dropout - make it harder to memorise data
                         sgd=optimizer,  # callable to update weights
                         losses=losses)
-        self.save_spacy(nlp, 'app/data/savedmodels/spaCy/ner/' + self.name + '/')
+        return self.save_spacy(nlp, 'app/data/savedmodels/spaCy/ner/' + self.name + '/')
+        
 
     def save_spacy(self, nlp, output_dir):
-        if not os.path.isdir(output_dir):
-            logger.info("creating new directory at path: " + output_dir)
-            os.makedirs(output_dir)
-        nlp.meta['name'] = self.name  # rename model
-        logger.info("Saving model to: " + output_dir)
-        nlp.to_disk(output_dir)
-        logger.info("Saved model to: " + output_dir)
-        print("Saved model to", output_dir)
-
-    # def save_spacy(self, nlp, output_dir):
-    #     str_output_dir = output_dir
-    #     if output_dir is not None:
-    #         output_dir = Path(output_dir)
-    #     if not output_dir.exists():
-    #         logger.info("creating new directory at path: " + str_output_dir)
-    #         output_dir.mkdir()
-    #     nlp.meta['name'] = self.name  # rename model
-    #     logger.info("Saving model to: " + str_output_dir)
-    #     nlp.to_disk(output_dir)
-    #     logger.info("Saved model to: " + str_output_dir)
-    #     print("Saved model to", str_output_dir)
+        try:
+            if not os.path.isdir(output_dir):
+                logger.info("creating new directory at path: " + output_dir)
+                os.makedirs(output_dir)
+            nlp.meta['name'] = self.name  # rename model
+            logger.info("Saving model to: " + output_dir)
+            nlp.to_disk(output_dir)
+            logger.info("Saved model to: " + output_dir)
+            return True
+        except Exception as e:
+            return False
 
     @staticmethod
-    def extact(text: str):
-        logger.info("loading core web sm")
-        nlp = spacy.load('en_core_web_sm')
-        logger.info("extracting entities")
-        doc = nlp(text)
-        return doc
+    def extact(text: str, name: str = None):
+        '''
+        Extract entities from spaCy ner model or pre trained spaCy ner model
+
+        parameters
+        @text - text from which entities should be extracted
+        @name - Optional - name of per trained spaCy ner model
+        '''
+        if name is None:
+            logger.info("loading core web sm")
+            nlp = spacy.load('en_core_web_sm')
+            logger.info("extracting entities")
+            doc = nlp(text)
+            return doc
+        else:
+            model_dir = "app/data/savedmodels/spaCy/ner/" + name + "/"
+            logger.info("loading ner from " + model_dir)
+            if os.path.isdir(model_dir):
+                nlp = spacy.load(model_dir)
+                logger.info("model loaded from " + model_dir)
+                doc = nlp(text)
+                return doc
+            else:
+                logger.info("no model present in " + model_dir)
+                return None
