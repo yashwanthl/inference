@@ -78,7 +78,7 @@ class Extractor:
             nlp.to_disk(output_dir)
             logger.info("Saved model to: " + output_dir)
             return True
-        except Exception as e:
+        except:
             return False
 
     @staticmethod
