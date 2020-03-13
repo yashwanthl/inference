@@ -2,3 +2,4 @@
 __pycache__/
 *.model
 app/data/log_files
+app/data/savedmodels

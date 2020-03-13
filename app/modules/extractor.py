@@ -27,3 +27,7 @@ class ExtractorModule:
         except Exception as e:
             logger.error("Error in extracting entities. Error " + str(e))
             return {"status": False, "Error": str(e)}
+    
+    def train_spacy(self, name: str, belongsTo: str, data = None):
+        extractor = Extractor(name, belongsTo)
+        extractor.train_spacy()
