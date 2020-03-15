@@ -3,29 +3,8 @@ import random
 from loguru import logger
 from uuid import uuid4
 import os
-
+import ast
 from pathlib import Path
-
-TRAIN_DATA = [('what is the price of polo?', {'entities': [(21, 25, 'PrdName')]}), 
-              ('what is the price of ball?', {'entities': [(21, 25, 'PrdName')]}), 
-              ('what is the price of jegging?', {'entities': [(21, 28, 'PrdName')]}), 
-              ('what is the price of t-shirt?', {'entities': [(21, 28, 'PrdName')]}), 
-              ('what is the price of jeans?', {'entities': [(21, 26, 'PrdName')]}), 
-              ('what is the price of bat?', {'entities': [(21, 24, 'PrdName')]}), 
-              ('what is the price of shirt?', {'entities': [(21, 26, 'PrdName')]}), 
-              ('what is the price of bag?', {'entities': [(21, 24, 'PrdName')]}), 
-              ('what is the price of cup?', {'entities': [(21, 24, 'PrdName')]}), 
-              ('what is the price of jug?', {'entities': [(21, 24, 'PrdName')]}), 
-              ('what is the price of plate?', {'entities': [(21, 26, 'PrdName')]}), 
-              ('what is the price of glass?', {'entities': [(21, 26, 'PrdName')]}), 
-              ('what is the price of moniter?', {'entities': [(21, 28, 'PrdName')]}), 
-              ('what is the price of desktop?', {'entities': [(21, 28, 'PrdName')]}), 
-              ('what is the price of bottle?', {'entities': [(21, 27, 'PrdName')]}), 
-              ('what is the price of mouse?', {'entities': [(21, 26, 'PrdName')]}), 
-              ('what is the price of keyboad?', {'entities': [(21, 28, 'PrdName')]}), 
-              ('what is the price of chair?', {'entities': [(21, 26, 'PrdName')]}), 
-              ('what is the price of table?', {'entities': [(21, 26, 'PrdName')]}), 
-              ('what is the price of watch?', {'entities': [(21, 26, 'PrdName')]})]
 
 class Extractor:
     def __init__(self, name: str, belongsto: str):
@@ -34,14 +13,17 @@ class Extractor:
         self.belongsto = belongsto
         self.active = True
 
-    def train_spacy(self, data = TRAIN_DATA, iterations = 20):
+    def train_spacy(self, data, iterations = 20):
         '''
         Train spaCy ner
 
         Parameters
-        @data - Training data
+        @data - Training data - should be of list of tuples 
+            eg: [('what is the price of polo?', {'entities': [(21, 25, 'PrdName')]}), ('what is the price of ball?', {'entities': [(21, 25, 'PrdName')]})]
+
         @iterations - default to 20
         '''
+        TRAIN_DATA = data
         nlp = spacy.blank('en')
         if 'ner' not in nlp.pipe_names:
             ner = nlp.create_pipe('ner')
@@ -55,7 +37,7 @@ class Extractor:
         with nlp.disable_pipes(*other_pipes):  # only train NER
             optimizer = nlp.begin_training()
             for itn in range(iterations):
-                print("Statring iteration " + str(itn))
+                logger.info("Statring iteration " + str(itn))
                 random.shuffle(TRAIN_DATA)
                 losses = {}
                 for text, annotations in TRAIN_DATA:

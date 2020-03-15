@@ -16,3 +16,15 @@ class Dataset:
         logger.info("Fetching data from " + file)
         print("[INFO]: Fetching data from " + file)
         return pd.read_csv(file)
+
+    def get_sampleannotations(self):
+        '''
+        read annotations.txt file from app/data/raw directory
+
+        :return: text from txt file
+        '''
+        file = self.data_dir + '/annotations.txt'
+        logger.info("Reading file: " + file)
+        f = open(file, "r")
+        contents = f.read()
+        return contents

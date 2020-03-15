@@ -1,6 +1,8 @@
 import sys
+import ast
 sys.path.append(".")
 from app.models.extractor import Extractor
+from app.modules.dataset import Dataset
 from loguru import logger
 import json
 
@@ -50,7 +52,10 @@ class ExtractorModule:
             extractor = Extractor(name, belongsTo)
             success = False
             if data is None:
-                success = extractor.train_spacy(iterations = iterations)
+                ds = Dataset()
+                data = ds.get_sampleannotations()
+                # ast.literal_eval converts data from a string to list of tuples 
+                success = extractor.train_spacy(data = ast.literal_eval(data), iterations = iterations)
             else:
                 success = extractor.train_spacy(data = data, iterations = iterations)
             if (success is not None and success):
