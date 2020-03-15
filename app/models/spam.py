@@ -1,5 +1,6 @@
 import pickle
 import nltk
+import os
 nltk.download('punkt')
 nltk.download('wordnet')
 nltk.download('stopwords')
@@ -96,8 +97,12 @@ class SpamOrHam:
         fname: Name of the classifier
 
         '''
-        logger.info("Saving Model " + fname)
-        print("[INFO]: Saving Model as " + fname)
+        output_dir = 'app/data/savedmodels/spamorham/'
+        if not os.path.isdir(output_dir):
+            logger.info("creating new directory at path: " + output_dir)
+            os.makedirs(output_dir)
+        logger.info("Saving Model " + fname + " to directory " + output_dir)
+        fname = output_dir + fname
         with open(fname, 'wb') as f:
             pickle.dump(self.vectorizer, f)
             pickle.dump(self.classifier, f) 
@@ -113,8 +118,9 @@ class SpamOrHam:
 
         '''
         model = SpamOrHam()
-        logger.info("Reading Model " + fname)
-        print("[INFO]: Reading Model " + fname)
+        output_dir = 'app/data/savedmodels/spamorham/'
+        logger.info("Reading Model " + fname + " from directory " + fname)
+        fname = output_dir + fname
         try:
             with open(fname, 'rb') as f:
                 model.vectorizer = pickle.load(f)
