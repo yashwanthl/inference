@@ -3,6 +3,7 @@ import sys
 sys.path.append(".")
 from loguru import logger
 from pydantic import BaseModel
+from typing import List
 from app.modules.extractor import ExtractorModule
 
 router = APIRouter()
@@ -10,6 +11,9 @@ router = APIRouter()
 class CreateSpacyRequest(BaseModel):
     name: str
     user: str
+
+class RegexMatchRequest(BaseModel):
+    words: List[str]
 
 @router.get("/")
 def get(text: str, name: str = None):
@@ -32,3 +36,17 @@ def create_train(request: CreateSpacyRequest):
     extractor =  ExtractorModule()
     response = extractor.train_spacy(request.name, request.user)
     return response
+
+@router.get("/regex/match")
+def regex_match(request: RegexMatchRequest):
+    '''
+    End point to match various regex types
+
+    Regex types supported
+    Date
+    Phone Number
+    '''
+    logger.info("Request to get regex matches")
+    extractor =  ExtractorModule()
+    reponse = extractor.regex_match(request.words)
+    return reponse
