@@ -15,7 +15,7 @@ class CreateSpacyRequest(BaseModel):
 class RegexMatchRequest(BaseModel):
     words: List[str]
 
-@router.get("/")
+@router.get("")
 def get(text: str, name: str = None):
     '''
     End point to extract labels from a give text 
@@ -27,7 +27,7 @@ def get(text: str, name: str = None):
     response = extractor.extract(text, name)
     return response
 
-@router.post("/")
+@router.post("")
 def create_train(request: CreateSpacyRequest):
     '''
     End point to create and train spacy ner
