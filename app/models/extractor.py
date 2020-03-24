@@ -6,6 +6,8 @@ import os
 import ast
 from pathlib import Path
 
+nlp = spacy.load('en_core_web_sm')
+
 class Extractor:
     def __init__(self, name: str, belongsto: str):
         self.id = str(uuid4())
@@ -73,8 +75,8 @@ class Extractor:
         @name - Optional - name of per trained spaCy ner model
         '''
         if name is None:
-            logger.info("loading core web sm")
-            nlp = spacy.load('en_core_web_sm')
+            # logger.info("loading core web sm")
+            # nlp = spacy.load('en_core_web_sm')
             logger.info("extracting entities")
             doc = nlp(text)
             return doc
@@ -82,9 +84,9 @@ class Extractor:
             model_dir = "app/data/savedmodels/spaCy/ner/" + name + "/"
             logger.info("loading ner from " + model_dir)
             if os.path.isdir(model_dir):
-                nlp = spacy.load(model_dir)
+                nlp_local = spacy.load(model_dir)
                 logger.info("model loaded from " + model_dir)
-                doc = nlp(text)
+                doc = nlp_local(text)
                 return doc
             else:
                 logger.info("no model present in " + model_dir)

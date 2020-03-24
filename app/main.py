@@ -3,10 +3,18 @@ import uvicorn
 from modules.dataset import Dataset
 from models.spam import SpamOrHam
 from loguru import logger
+from starlette.middleware.cors import CORSMiddleware
 
 from routers import spam, classifier, extract
 
 app = FastAPI(title="Hubble Inference API", version='1.0', description="Hubble - Text analytics platform. Endpoints for all text analytics models")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Initiate logging
 log_format = "{time} | {level} | {message} | {file} | {line} | {function} | {exception}"
