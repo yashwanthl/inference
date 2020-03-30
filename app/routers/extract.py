@@ -24,7 +24,7 @@ def get(text: str, name: str = None):
     text: text from which labels has to be extracted
     '''
     extractor =  ExtractorModule()
-    response = extractor.extract(text, name)
+    response = extractor.extract_all(text, name)
     return response
 
 @router.post("")
@@ -50,3 +50,23 @@ def regex_match(request: RegexMatchRequest):
     extractor =  ExtractorModule()
     reponse = extractor.regex_match(request.words)
     return reponse
+
+@router.get("/regex/match/date/monthfirst")
+def regex_find(text: str):
+    '''
+    End point to find date matches in a given text
+    date formats supported: mm/dd/yyyy or mm-dd-yyyy or mm.dd.yyyy or mmm-dd-yyyy or mmm/dd/yyyy or mmm.dd.yyyy In all the cases year can be yy also 
+
+    PARAMETERS
+    ----------
+    text: str
+    text in which dates to be found if any
+
+    RETURNS
+    -------
+    Dict like {"status": bool, "Matches": List of all date matches with start and end index}
+    '''
+    logger.info("Reuqest to find all Month-First date matches in: " + text)
+    extractor = ExtractorModule()
+    response = extractor.regex_match_date_monthfirst(text)
+    return response
