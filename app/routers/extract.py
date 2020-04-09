@@ -79,6 +79,9 @@ def regex_find(text: str):
 
 @router.post("/flashtext")
 def create_keyword_processor(request: CreateKeywordProcessorRequest):
+    '''
+    End point to label words against  a user defined label
+    '''
     logger.info("Request to create a new key word processor")
     flashtext = FlaskTextModule()
     response = flashtext.create_train(request.name, request.label, request.words)
@@ -86,6 +89,9 @@ def create_keyword_processor(request: CreateKeywordProcessorRequest):
 
 @router.get("/flashtext")
 def extract_keyword(name: str, text: str):
+    '''
+    end point to extract key words from given flash text processor
+    '''
     logger.info("Extracting key words from " + name + " key word processor")
     flashtext = FlaskTextModule()
     response = flashtext.extract(name, text)
