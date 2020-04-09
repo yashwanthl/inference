@@ -5,6 +5,7 @@ from loguru import logger
 from pydantic import BaseModel
 from typing import List
 from app.modules.extractor import ExtractorModule
+from app.modules.flashtext import FlaskTextModule
 
 router = APIRouter()
 
@@ -13,6 +14,11 @@ class CreateSpacyRequest(BaseModel):
     user: str
 
 class RegexMatchRequest(BaseModel):
+    words: List[str]
+
+class CreateKeywordProcessorRequest(BaseModel):
+    name: str
+    label: str
     words: List[str]
 
 @router.get("")
@@ -69,4 +75,18 @@ def regex_find(text: str):
     logger.info("Reuqest to find all Month-First date matches in: " + text)
     extractor = ExtractorModule()
     response = extractor.regex_match_date_monthfirst(text)
+    return response
+
+@router.post("/flashtext")
+def create_keyword_processor(request: CreateKeywordProcessorRequest):
+    logger.info("Request to create a new key word processor")
+    flashtext = FlaskTextModule()
+    response = flashtext.create_train(request.name, request.label, request.words)
+    return response
+
+@router.get("/flashtext")
+def extract_keyword(name: str, text: str):
+    logger.info("Extracting key words from " + name + " key word processor")
+    flashtext = FlaskTextModule()
+    response = flashtext.extract(name, text)
     return response
