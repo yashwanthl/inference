@@ -1,1 +1,1 @@
-This is Hubble Inference API, using FastAPI framework
+This is Inference API, using FastAPI framework
